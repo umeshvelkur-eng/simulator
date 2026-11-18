@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>8086 Digital Logic Simulator</title>
+  <meta name="description" content="Interactive digital arithmetic circuit simulator: half adder, full adder, binary adder, carry look-ahead adder and parallel adder/subtractor, with links to the Intel 8086 ALU.">
+  <meta name="theme-color" content="#0a1020">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e1a33'/%3E%3Cpath d='M8 9h8a7 7 0 0 1 0 14H8z' fill='none' stroke='%2322d3ee' stroke-width='2.4'/%3E%3Ccircle cx='26' cy='16' r='2.5' fill='%2322c55e'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle navigation">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <a class="brand" href="#home" aria-label="8086 Digital Logic Simulator home">
+      <span class="brand-chip" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M7 8h9a8 8 0 0 1 0 16H7z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M2 12h5M2 20h5M24 16h6" stroke="currentColor" stroke-width="2.4"/><circle cx="29" cy="16" r="2.4" fill="#22c55e"/></svg>
+      </span>
+      <span class="brand-text"><b>8086</b> Digital Logic Simulator</span>
+    </a>
+    <nav class="topnav" aria-label="Main">
+      <a href="#home" data-nav="home">Home</a>
+      <a href="#experiments" data-nav="experiments">Experiments</a>
+      <a href="#docs" data-nav="docs">Documentation</a>
+      <a href="#about" data-nav="about">About</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Experiments">
+      <div class="side-title">Experiments</div>
+      <nav id="expNav"></nav>
+      <div class="side-title">Resources</div>
+      <a class="side-link" href="#8086" data-page="8086"><span class="num mono">86</span><span>Connection with Intel 8086</span></a>
+      <a class="side-link" href="#docs" data-page="docs"><span class="num mono">?</span><span>Simulator guide</span></a>
+      <div class="side-legend">
+        <div class="side-title">Signal legend</div>
+        <span><i class="lg hi"></i>HIGH — logic 1</span>
+        <span><i class="lg lo"></i>LOW — logic 0</span>
+        <span><i class="lg pend"></i>Awaiting propagation</span>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <main id="main" tabindex="-1">
+      <!-- ============================ HOME ============================ -->
+      <section class="view" id="view-home" data-title="Home">
+        <div class="hero">
+          <div class="hero-text">
+            <span class="eyebrow">Digital arithmetic laboratory</span>
+            <h1>See how a processor adds — <span class="grad">one gate at a time.</span></h1>
+            <p>Five interactive experiments build up from a single-bit half adder to the parallel adder/subtractor at the heart of an ALU.
+              Every diagram is driven by a real gate-level netlist: flip an input and watch the signal travel through the gates.</p>
+            <div class="hero-actions">
+              <a class="btn primary" href="#half-adder">Start with Experiment 1</a>
+              <a class="btn" href="#docs">How to use the simulator</a>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <svg viewBox="0 0 320 200">
+              <defs><linearGradient id="hg" x1="0" x2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs>
+              <path class="hw on" d="M20 60H120"/><path class="hw" d="M20 140H120"/><path class="hw on" d="M60 60V112H120"/><path class="hw" d="M90 140V88H120"/>
+              <path d="M120 70Q158 70 184 92Q158 114 120 114Q133 92 120 70Z" class="hg on"/><path d="M112 70Q125 92 112 114" class="hg-arc"/>
+              <path class="hw on" d="M184 92H300"/><circle cx="20" cy="60" r="9" class="hp on"/><circle cx="20" cy="140" r="9" class="hp"/><circle cx="300" cy="92" r="10" class="hp on"/>
+              <circle cx="60" cy="60" r="4" class="hd"/>
+            </svg>
+          </div>
+        </div>
+
+        <h2 class="section-title">Experiments</h2>
+        <div class="card-grid" id="homeCards"></div>
+
+        <div class="two-col">
+          <div class="card card-body">
+            <h2 class="card-title">Quick guide</h2>
+            <ol class="guide">
+              <li><b>Pick an experiment</b> from the sidebar. Each one opens in its own workspace and remembers its inputs.</li>
+              <li><b>Change inputs</b> with switches, binary text boxes, bit buttons or by clicking input terminals in the diagram.</li>
+              <li><b>Watch propagation.</b> Signals advance one gate delay at a time. Use <kbd>Run</kbd>, <kbd>Pause</kbd> and <kbd>Step</kbd>.</li>
+              <li><b>Read the results</b> in the output panel, the highlighted truth-table row and the step-by-step calculation.</li>
+            </ol>
+          </div>
+          <div class="card card-body">
+            <h2 class="card-title">What the colours mean</h2>
+            <ul class="legend-list">
+              <li><i class="lg hi"></i><span><b>Green</b> wire, gate or terminal: logic HIGH (1). Moving dashes show the signal flowing while the simulation runs.</span></li>
+              <li><i class="lg lo"></i><span><b>Grey</b>: logic LOW (0).</span></li>
+              <li><i class="lg pend"></i><span><b>Dashed amber</b>: the new value has not reached this point yet — it still shows its old value, just like real hardware before it settles.</span></li>
+            </ul>
+            <p class="muted small">These are digital arithmetic circuit simulations related to the 8086 ALU — see <a href="#8086">Connection with Intel 8086</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ DOCS ============================ -->
+      <section class="view" id="view-docs" data-title="Documentation">
+        <div class="page-head"><span class="eyebrow">Documentation</span><h1>Simulator guide</h1>
+          <p class="lead">How to operate the workspaces, what the propagation model means, and how each experiment is organised.</p></div>
+        <div class="doc-grid">
+          <article class="card card-body prose">
+            <h2>Workspace layout</h2>
+            <p>Every experiment has four sections:</p>
+            <ul>
+              <li><b>Circuit Diagram</b> — the gate-level (or block-level) schematic. Wires, gates and terminals are coloured by their live logic value. Input terminals are clickable.</li>
+              <li><b>Input Controls</b> — toggle switches for single bits; for multi-bit experiments a binary text box (validated), per-bit switches, +/− buttons, presets, and bit-width selection.</li>
+              <li><b>Output Display</b> — LEDs, result bits, decimal / signed / hexadecimal values and flags.</li>
+              <li><b>Truth Table / Explanation</b> — tabs with the truth or bit-wise table, step-by-step calculation, comparisons, and the lab-record theory (aim, theory, Boolean expressions, procedure, result).</li>
+            </ul>
+            <h2>Simulation controls</h2>
+            <table class="cmp-table">
+              <thead><tr><th>Control</th><th>Key</th><th>What it does</th></tr></thead>
+              <tbody>
+                <tr><td><b>Run</b></td><td><kbd>Space</kbd></td><td>After any input change the signals propagate automatically, one gate delay per tick.</td></tr>
+                <tr><td><b>Pause</b></td><td><kbd>Space</kbd></td><td>Freezes propagation. Inputs can still change; downstream signals wait.</td></tr>
+                <tr><td><b>Step</b></td><td><kbd>N</kbd></td><td>Advances exactly one gate delay. Ideal for following the carry chain.</td></tr>
+                <tr><td><b>Reset</b></td><td><kbd>R</kbd></td><td>Restores the experiment’s default inputs.</td></tr>
+                <tr><td><b>Gate delay</b></td><td>—</td><td>Animation time per gate delay (0 = instant).</td></tr>
+              </tbody>
+            </table>
+            <p>Experiment-specific keys: <kbd>A</kbd> <kbd>B</kbd> (half adder), <kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> (full adder), <kbd>M</kbd> (adder/subtractor mode).</p>
+            <h2>Propagation model</h2>
+            <p>Each gate has a delay of one unit. A signal’s arrival time <span class="mono">t</span> is the length of the longest gate path from the inputs (the
+              “Propagation” meter under each diagram). When an input changes, the simulator reveals level 1, then level 2, and so on. Signals that have not been
+              reached keep their previous value and are drawn dashed amber. This structural (worst-case) model makes ripple delay and look-ahead speed-up directly visible.</p>
+            <h2>Entering binary numbers</h2>
+            <ul>
+              <li>Use the <b>BIN / DEC / HEX</b> switch above each number box to type a custom value in binary, decimal or hexadecimal. The choice is remembered.</li>
+              <li>Binary: 0s and 1s (spaces, underscores and a <span class="mono">0b</span> prefix are accepted; shorter values are zero-padded).
+                Decimal: 0 … 2ⁿ−1, and in the adder/subtractor and 8086 demo also negative values down to −2ⁿ⁻¹ (stored as two’s complement).
+                Hex: 0–9 / A–F with optional <span class="mono">0x</span> prefix or <span class="mono">h</span> suffix.</li>
+              <li>Invalid characters or values outside the bit width show an error and the previous valid value is kept.</li>
+              <li>Arrow ↑ / ↓ in the text box increments / decrements (wrapping around).</li>
+            </ul>
+          </article>
+          <article class="card card-body prose">
+            <h2>Experiments at a glance</h2>
+            <table class="cmp-table">
+              <thead><tr><th>#</th><th>Circuit</th><th>Gates</th><th>Worst delay</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Half adder</td><td>XOR, AND</td><td>1</td></tr>
+                <tr><td>2</td><td>Full adder</td><td>2 XOR, 2 AND, OR</td><td>3</td></tr>
+                <tr><td>3</td><td>n-bit ripple-carry adder</td><td>n full adders</td><td>2n + 1</td></tr>
+                <tr><td>4</td><td>Carry look-ahead adder</td><td>G/P cells, AND–OR network, XORs</td><td>4</td></tr>
+                <tr><td>5</td><td>Adder / subtractor</td><td>n XOR + n full adders + overflow XOR</td><td>2n + 3</td></tr>
+              </tbody>
+            </table>
+            <h2>Lab record format</h2>
+            <p>The <b>Theory</b> tab of each experiment follows the usual record structure: Aim, Theory, Boolean expressions, Circuit diagram, Procedure and Result.
+              The Result paragraph updates with the inputs you are currently testing.</p>
+            <h2>Verifying the circuits</h2>
+            <p>The half and full adder truth-table tabs have a <b>Verify all</b> button that drives every input combination through the drawn circuit and ticks each row.</p>
+            <p>Developers can run <span class="mono">DLS.selfTest()</span> in the browser console: it applies test inputs to all five experiments and checks that every
+              drawn wire and gate maps to a real netlist signal, shows the correct colour, and produces the arithmetically correct result. The logic engine also has a
+              Node test-suite: <span class="mono">node tests/logic.test.js</span>.</p>
+            <h2>Accessibility</h2>
+            <p>All controls are keyboard reachable, input terminals in diagrams are focusable buttons, and the status line announces propagation changes.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============================ 8086 ============================ -->
+      <section class="view" id="view-8086" data-title="Connection with Intel 8086">
+        <div class="page-head"><span class="eyebrow">Architecture</span><h1>Connection with Intel 8086 Microprocessor</h1>
+          <p class="lead">How the adders in these experiments relate to the arithmetic performed by the 8086 — and where the analogy stops.</p></div>
+
+        <div class="notice">
+          <b>Important clarification.</b> These five experiments are simulations of digital arithmetic circuits. They are <u>not</u> an 8086 instruction-set emulator, and they
+          do not reproduce the transistor-level or microarchitectural design of the 8086’s ALU. They model the textbook logic that any binary ALU must implement, so they
+          explain <i>what</i> the 8086 computes for ADD, SUB, CMP, INC, DEC and NEG and how its flags are defined.
+        </div>
+
+        <div class="doc-grid">
+          <article class="card card-body prose">
+            <h2>The role of the ALU</h2>
+            <p>The 8086 is divided into a Bus Interface Unit (BIU), which fetches instructions and data, and an Execution Unit (EU), which decodes and executes them.
+              The EU contains the <b>Arithmetic Logic Unit</b>: a 16-bit unit that performs addition, subtraction, increment/decrement, comparison and the logical
+              operations (AND, OR, XOR, NOT) on 8-bit or 16-bit operands, and updates the <b>FLAGS</b> register.</p>
+            <h2>How binary addition is performed</h2>
+            <p>An instruction such as <span class="mono">ADD AX, BX</span> asks the ALU to add two 16-bit words. Logically this is exactly Experiment 3: bit i of the
+              result is Aᵢ ⊕ Bᵢ ⊕ Cᵢ and the carry passes to bit i + 1. A plain 16-bit ripple chain would need ~33 gate delays, so real ALUs use faster carry
+              techniques such as the look-ahead idea of Experiment 4. <span class="mono">ADC</span> (add with carry) feeds the previous CF into C0 — the Cin input of
+              Experiments 2–4 — which is how multi-word numbers are added.</p>
+            <h2>How subtraction uses two’s complement</h2>
+            <p><span class="mono">SUB AX, BX</span> computes AX − BX. Arithmetically this is AX + (~BX) + 1 — exactly Experiment 5 with M = 1: the B operand is
+              inverted and the +1 enters as the carry-in. <span class="mono">CMP</span> performs the same subtraction but discards the result and keeps only the flags;
+              <span class="mono">NEG</span> computes 0 − operand; <span class="mono">SBB</span> also subtracts the incoming borrow.</p>
+            <h2>Carry and overflow flags</h2>
+            <ul>
+              <li><b>CF (carry)</b> — unsigned view. After ADD it is the carry out of the most significant bit (Cₙ). After SUB/CMP the 8086 sets CF when a <i>borrow</i>
+                occurred (unsigned destination &lt; source) — the inverse of the adder’s carry-out in Experiment 5.</li>
+              <li><b>OF (overflow)</b> — signed view. Set when the two’s-complement result is outside the representable range; equivalent to Cₙ ⊕ Cₙ₋₁ (the V output of Experiment 5).</li>
+              <li><b>ZF, SF, PF</b> — result is zero; copy of the sign bit; even parity of the low byte.</li>
+              <li><b>AF (auxiliary)</b> — carry or borrow between bit 3 and bit 4, used by DAA/DAS/AAA/AAS for BCD arithmetic.</li>
+            </ul>
+            <h2>How the experiments map to the 8086</h2>
+            <table class="cmp-table">
+              <thead><tr><th>Experiment</th><th>Related 8086 concept</th></tr></thead>
+              <tbody>
+                <tr><td>1 · Half adder</td><td>Adding the LSBs when there is no carry-in; basis of INC (adding 1)</td></tr>
+                <tr><td>2 · Full adder</td><td>One bit slice of the ALU’s adder; Cin ↔ CF for ADC</td></tr>
+                <tr><td>3 · Binary adder</td><td>8-bit (AL, BL…) and 16-bit (AX, BX…) ADD; CF from the final carry</td></tr>
+                <tr><td>4 · Carry look-ahead</td><td>Why ALUs need fast carry logic for 16-bit words</td></tr>
+                <tr><td>5 · Adder/subtractor</td><td>SUB, CMP, NEG via two’s complement; CF/OF behaviour</td></tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="prose">
+            <div class="card card-body">
+              <h2>Try it: ADD / SUB and the 8086 flags</h2>
+              <p class="muted small">Set the operands and operation to see the resulting value and the flags the 8086 would set for that ADD or SUB.</p>
+            </div>
+            <div id="demo8086"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============================ ABOUT ============================ -->
+      <section class="view" id="view-about" data-title="About">
+        <div class="page-head"><span class="eyebrow">About</span><h1>About this simulator</h1></div>
+        <div class="doc-grid">
+          <article class="card card-body prose">
+            <h2>Purpose</h2>
+            <p>A browser-based laboratory for the arithmetic-circuit experiments of a digital electronics / microprocessors course. Students can operate each circuit,
+              watch signals propagate, and connect what they see with truth tables, Boolean equations and the 8086’s arithmetic instructions.</p>
+            <h2>How it works</h2>
+            <ul>
+              <li><b>Gate-level netlists.</b> Every circuit is described as a list of gates (<span class="mono">js/logic.js</span>). The diagrams are drawn from the same
+                signal names and coloured from the evaluated netlist, so nothing on screen is decorative.</li>
+              <li><b>Independent reference arithmetic</b> (ripple, look-ahead, add/subtract, 8086 flags) is used for the explanations and cross-checked against the netlists by the test-suite.</li>
+              <li><b>No dependencies.</b> Plain HTML, CSS, JavaScript and SVG. No backend, no build step, no external services — open <span class="mono">index.html</span> and it runs offline.</li>
+            </ul>
+            <h2>Limitations</h2>
+            <ul>
+              <li>Timing uses a unit-delay, structural (worst-case) model; real gates have different and data-dependent delays.</li>
+              <li>The look-ahead network is a single level with unlimited fan-in, as in textbook equations.</li>
+              <li>The 8086 section explains concepts and flag rules; it does not emulate instructions or the chip’s internal design.</li>
+            </ul>
+          </article>
+          <article class="card card-body prose">
+            <h2>Project structure</h2>
+            <pre class="tree mono">index.html          app shell and static pages
+css/styles.css      dark laboratory theme
+js/logic.js         netlists + arithmetic (no DOM)
+js/svg.js           gate, wire and pin drawing
+js/components.js    UI components + workspace engine
+js/experiments/     one file per experiment
+js/pages.js         home cards, 8086 flags demo
+js/app.js           router, shortcuts, diagnostics
+tests/logic.test.js Node test-suite</pre>
+            <h2>Browser support</h2>
+            <p>Current versions of Chrome, Edge, Firefox and Safari. Designed for desktop and laptop screens; the layout also adapts to tablets.</p>
+          </article>
+        </div>
+      </section>
+
+      <div id="workspaces"></div>
+    </main>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/logic.js"></script>
+  <script src="js/svg.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/experiments/halfAdder.js"></script>
+  <script src="js/experiments/fullAdder.js"></script>
+  <script src="js/experiments/binaryAdder.js"></script>
+  <script src="js/experiments/cla.js"></script>
+  <script src="js/experiments/addSub.js"></script>
+  <script src="js/pages.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
